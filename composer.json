@@ -12,13 +12,9 @@
             "role": "Developer"
         }
     ],
-    "require": {
-        "laravel/framework": "5.1.*",
-        "laravelcollective/remote": "5.1.*"
-    },
     "autoload": {
         "psr-0": {
-            "Danj\\Gitbar": "src/"
+            "zappem\\zappem-laravel": "src/"
         }
     }
 }
