@@ -1,0 +1,24 @@
+{
+    "name": "zappem/zappem-laravel",
+    "description": "Connect your Laravel application to Zappem",
+    "keywords": ["zappem","bug", "tracking"],
+    "homepage": "https://github.com/danjohnson95/zappem-laravel",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Dan Johnson",
+            "email": "dan@danj.eu",
+            "homepage": "http://danj.eu",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "laravel/framework": "5.1.*",
+        "laravelcollective/remote": "5.1.*"
+    },
+    "autoload": {
+        "psr-0": {
+            "Danj\\Gitbar": "src/"
+        }
+    }
+}
