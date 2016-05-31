@@ -12,30 +12,21 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
 	public function register(){
 
-		// if (! getenv('ZAPPEM_TOKEN') and ! $this->app['config']->get('services.zappem')) {
-  //           return;
-  //       }
+		$defaults = [];
 
+		$config = array_merge($defaults, $this->app['config']->get('services.zappem', []));
+        $config['project_id'] = getenv('ZAPPEM_PROJECT') ?: $this->app['config']->get('services.zappem.project_id');
+        $config['zappem_url'] = getenv('ZAPPEM_URL') ?: $this->app['config']->get('services.zappem.zappem_url');
+        
+        if (empty($config['project_id'])) {
+            throw new \InvalidArgumentException('Zappem project ID not configured');
+        }
+        if (empty($config['zappem_url'])) {
+        	throw new \InvalidArgumentException('Zappem URL not configured');
+        }
 
-
-
-		$this->app['zappem'] = $this->app->share(function($app){
-
-			// if (! getenv('ROLLBAR_TOKEN') and ! $this->app['config']->get('services.rollbar')) {
-   //          	return;
-   //      	}
-
-			$defaults = [
-				'access_token' => null
-			];
-
-	        $config = array_merge($defaults, $app['config']->get('services.zappem', []));
-	        $config['access_token'] = getenv('ZAPPEM_TOKEN') ?: $app['config']->get('services.zappem.access_token');
-	        if (empty($config['access_token'])) {
-	            throw new InvalidArgumentException('Zappem access token not configured');
-	        }
-
-			return new \Zappem\ZappemLaravel\Zappem(123, '5737c0aade404c4705b5d5bd');
+		$this->app['zappem'] = $this->app->share(function($app) use ($config){
+			return new \Zappem\ZappemLaravel\Zappem($config['zappem_url'], $config['project_id']);
 		});
 
 		$this->app->booting(function(){
