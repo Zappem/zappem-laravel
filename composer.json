@@ -13,8 +13,11 @@
         }
     ],
     "autoload": {
+        "classmap": [
+            "src"
+        ],
         "psr-0": {
-            "zappem\\zappem-laravel": "src/"
+            "Zappem\\ZappemLaravel\\": "src/"
         }
     }
 }
