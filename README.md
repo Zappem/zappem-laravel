@@ -3,7 +3,7 @@ Connect your Laravel application to Zappem
 
 ** This package is currently in beta. Contributions welcome **
 
-To install this package, stick this in your `composer.json` file on the `require` bit:
+To install this package, stick this in your `composer.json` file on the `require` bit and run a `composer update`:
 
     "zapppem/zappem-laravel": "dev-master"
 
