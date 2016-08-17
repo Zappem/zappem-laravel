@@ -54,7 +54,7 @@ class Zappem{
             $start = key($range) + 1;
             $code  = join("\n", $range);
         
-            $Trace['file_contents'] = $code;
+            $Trace['filecontents'] = $code;
 		}
 		return $Trace;
     }
@@ -78,7 +78,7 @@ class Zappem{
 		                $start = key($range) + 1;
 		                $code  = join("\n", $range);
 		            
-		                $Trace['file_contents'] = $code;
+		                $Trace['filecontents'] = $code;
 		    		}
 		    		$Trace['args'] = null;
 		    		$Stack[] = $Trace;
