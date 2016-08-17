@@ -56,6 +56,7 @@ class Zappem{
         
             $Trace['filecontents'] = $code;
 		}
+		$Trace['file'] = str_replace(base_path(), "..", $Trace['file']);
 		return $Trace;
     }
 
@@ -81,6 +82,7 @@ class Zappem{
 		                $Trace['filecontents'] = $code;
 		    		}
 		    		$Trace['args'] = null;
+		    		$Trace['file'] = str_replace(base_path(), "..", $Trace['file']);
 		    		$Stack[] = $Trace;
 		    	}
 		    }
