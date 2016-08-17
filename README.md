@@ -5,11 +5,11 @@ Connect your Laravel application to Zappem
 
 To install this package, stick this in your `composer.json` file on the `require` bit and run a `composer update`:
 
-    "zapppem/zappem-laravel": "dev-master"
+    "zappem/zappem-laravel": "dev-master"
 
 Now add the Service Provider to your `app.php` file:
 
-    "Zappem\ZappemLaravel\ServiceProvider"
+    'Zappem\ZappemLaravel\ServiceProvider'
 
 Now add this in your `Handler.php` file in the `report()` function to catch your exceptions and send them to Zappem:
 
