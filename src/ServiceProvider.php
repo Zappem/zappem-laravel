@@ -15,6 +15,12 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 		$defaults = [];
 
 		$config = array_merge($defaults, $this->app['config']->get('services.zappem', []));
+		$config['zappem_enable'] = getenv('ZAPPEM_ENABLE') ?: $this->app['config']->get('services.zappem.zappem_enable');
+
+		if(!$config['zappem_enable']){
+			return false;
+		}
+		
         $config['project_id'] = getenv('ZAPPEM_PROJECT') ?: $this->app['config']->get('services.zappem.project_id');
         $config['zappem_url'] = getenv('ZAPPEM_URL') ?: $this->app['config']->get('services.zappem.zappem_url');
         
