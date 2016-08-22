@@ -27,6 +27,7 @@ These values will need to be stored in your .env file:
 
     ZAPPEM_URL=http://localhost:3000
     ZAPPEM_PROJECT=123456
+    ZAPPEM_ENABLE=true
 
 
 ## Passing through a user
