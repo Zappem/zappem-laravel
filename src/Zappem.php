@@ -13,118 +13,31 @@ class Zappem{
 		$this->URL = $URL;
 		$this->Project = $Project;
 		$this->User = $User;
-		$this->autoload = require base_path().'/vendor/autoload.php';
-
 	}
-
-    private function getFileLines($start = 0, $length = null, $file){
-        if (null !== ($contents = file_get_contents($file))) {
-            $lines = explode("\n", $contents);
-
-            if ($length !== null) {
-                $start  = (int) $start;
-                $length = (int) $length;
-                if ($start < 0) {
-                    $start = 0;
-                }
-                $lines = array_slice($lines, $start, $length, true);
-            }
-            return $lines;
-        }
-    }
-
-    private function getFileFromClassName($class){
-    	return $this->autoload->findFile($class);
-    }
-
-    private function mainExceptionAsTrace($e){
-    	$Trace = [];
-    	$Trace['file'] = $e->getFile();
-    	$Trace['line'] = $e->getLine();
-    	$Trace['function'] = null;
-    	$Trace['class'] = get_class($e);
-    	$Trace['type'] = null;
-    	$Trace['args'] = null;
-    	$range = $this->getFileLines($Trace['line'] - 8, 10, $Trace['file']);
-		if($range){
-			$range = array_map(function($line){
-                return empty($line) ? ' ' : $line;
-            }, $range);
-
-            $start = key($range) + 1;
-            $code  = join("\n", $range);
-        
-            $Trace['filecontents'] = $code;
-		}
-		$Trace['file'] = str_replace(base_path(), "..", $Trace['file']);
-		return $Trace;
-    }
-
-    private function processTrace($e){
-    	$Stack = [];
-
-    	$Stack[] = $this->mainExceptionAsTrace($e);
-
-    	foreach($e->getTrace() as $Trace){
-    		if(isset($Trace['class'])){
-	    		$Trace['file'] = $this->getFileFromClassName($Trace['class']);
-	    		if(isset($Trace['line'])){
-		    		$range = $this->getFileLines($Trace['line'] - 8, 10, $Trace['file']);
-
-		    		if($range){
-						$range = array_map(function($line){
-		                    return empty($line) ? ' ' : $line;
-		                }, $range);
-
-		                $start = key($range) + 1;
-		                $code  = join("\n", $range);
-		            
-		                $Trace['filecontents'] = $code;
-		    		}
-		    		$Trace['args'] = null;
-		    		$Trace['file'] = str_replace(base_path(), "..", $Trace['file']);
-		    		$Stack[] = $Trace;
-		    	}
-		    }
-	    }
-
-	    return $Stack;
-    }
-
 
 	public function exception($e, $found_by=null){
 
 		$Trace = $this->processTrace($e);
 
 		$this->Data = [
-			"project_id" => $this->Project,
-			"exception" => [
-				"class" => get_class($e),
-				"message" => $e->getMessage() ? $e->getMessage() : get_class($e),
-				"file"	  => $e->getFile(),
-				"line"	  => $e->getLine(),
-				"code"	  => $e->getCode(),
-				"trace" => $Trace,
-				"get"	=> $_GET,
-				"post"	=> $_POST,
-				"server" => $_SERVER,
-				"req"	=> $_REQUEST,
-				"env"	=> $_ENV,
-				"cookie" => $_COOKIE,
-				"env"	=> $_ENV
-			]
+			"project" => $this->Project,
+			"method" => $_SERVER['REQUEST_METHOD'],
+			"url" => $_SERVER['REQUEST_URI'],
+			"ip" => $_SERVER['REMOTE_ADDR'],
+			"useragent" => $_SERVER['HTTP_USER_AGENT'],
+			"message" => $e->getMessage() ? $e->getMessage() : get_class($e),
+			"class" => get_class($e),
+			"file" => $e->getFile(),
+			"line" => $e->getLine(),
+			"trace" => $e->getTrace()
 		];
 
 		return $this;
 
 	}
 
-	public function user($ID, $Username, $Email){
-		$this->Data["found_by"] = [
-			"user_id" => $ID,
-			"user" => $Username,
-			"email" => $Email
-		];
+	public function user($User){
+		$this->Data["user"] = $User;
 		return $this;
 	}
 
