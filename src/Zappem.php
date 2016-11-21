@@ -17,8 +17,6 @@ class Zappem{
 
 	public function exception($e, $found_by=null){
 
-		$Trace = $this->processTrace($e);
-
 		$this->Data = [
 			"project" => $this->Project,
 			"method" => $_SERVER['REQUEST_METHOD'],
