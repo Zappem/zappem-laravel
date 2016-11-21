@@ -4,7 +4,6 @@
     "keywords": ["zappem","bug", "tracking"],
     "homepage": "https://github.com/danjohnson95/zappem-laravel",
     "license": "MIT",
-    "version": "1.0.1",
     "authors": [
         {
             "name": "Dan Johnson",
