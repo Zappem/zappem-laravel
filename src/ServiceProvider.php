@@ -1,28 +1,23 @@
 <?php namespace Zappem\ZappemLaravel;
 
-//use Illuminate\Routing\Router;
-//use Illuminate\Session\SessionManager;
-use Zappem;
-use \App;
-
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
 
-	protected $defer = false;
-
 	public function register(){
 
-		$defaults = [];
+		$this->mergeConfigFrom(
+			__DIR__.'/zappemconfig.php', 
+			'services.zappem');
 
-		$config = array_merge($defaults, $this->app['config']->get('services.zappem', []));
-		$config['zappem_enable'] = $this->app['config']->get('services.zappem.zappem_enable');
+		$this->publishes([
+			__DIR__.'/zappemconfig.php' => config_path('zappem.php')
+		]);
+
+		$config = $this->app['config']->get('services.zappem');
 
 		if(!$config['zappem_enable']){
 			return false;
 		}
-		
-        $config['project_id'] = $this->app['config']->get('services.zappem.project_id');
-        $config['zappem_url'] = $this->app['config']->get('services.zappem.zappem_url');
         
         if (empty($config['project_id'])) {
             throw new \InvalidArgumentException('Zappem project ID not configured');

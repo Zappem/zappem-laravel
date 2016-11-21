@@ -1,49 +1,59 @@
 # zappem-laravel
 Connect your Laravel application to Zappem
 
-** This package is currently in beta. Contributions welcome **
+## Installation
 
-To install this package, stick this in your `composer.json` file on the `require` bit and run a `composer update`:
+    $ composer require zappem/zappem-laravel
 
-    "zappem/zappem-laravel": "dev-master"
-
-Now add the Service Provider to your `app.php` file:
-
-    'Zappem\ZappemLaravel\ServiceProvider'
-
-Now add this in your `Handler.php` file in the `report()` function to catch your exceptions and send them to Zappem:
-
-    \Zappem::exception($e)->send();
+Then add the following line to your `ServiceProviders` array in `config/app.php`:
+    
+    Zappem\ZappemLaravel\ServiceProvider::class
 
 ## Configuration
 
-Now you'll need to configure Zappem to work with your application. We'll need two things from you - 
- * The URL (including port number) in which Zappem is running.
- * The Project ID that this exception relates to.
- 
-You can find your Project ID on the project dashboard on Zappem.
+Now you'll need to configure Zappem. You can define your configuration in your env file.
 
-These values will need to be stored in your .env file:
+The env variables are:
 
     ZAPPEM_URL=http://localhost:3000
     ZAPPEM_PROJECT=123456
     ZAPPEM_ENABLE=true
 
+- ZAPPEM_URL - The full URL (including port number) where Zappem is running.
+- ZAPPEM_PROJECT - The project ID for this application. You can find this on Zappem.
+- ZAPPEM_ENABLE - true/false
 
-## Passing through a user
+Alternatively you can define these values in a configuration file.
+    
+    $ php artisan vendor:publish
 
-If your application requires users to log in, you can send the details of the person who was logged in at the time when an exception occured. We accept three arguments
- * A user ID
- * A user's name or username
- * The user's email address
- 
-Here's an example:
+The configuration file will be located in `/config/zappem.php`.
 
-    \Zappem::exception($e)
-    ->user(Auth::user()->id, Auth::user()->name, Auth::user()->email)
-    ->send();
-  
-## Getting back an error code
+Note: You may need to rebuild the cache when changing config variables in Laravel
+
+    $ php artisan config:cache
+
+## Usage
+
+Your application should report errors to Zappem in the `report()` function in `app/Exceptions/Handler.php`.
+
+Here's an example of how it should look:
+
+    public function report(Exception $e){
+        if(Config::get('services.zappem.zappem_enable')) \Zappem::exception($e)->send();
+    }
+
+### Passing through a user
+
+If your application requires users to log in, you can send the currently logged in user to Zappem. This will then display in Zappem when viewing the exception.
+
+    public function report(Exception $e){
+        if(Config::get('services.zappem.zappem_enable')) \Zappem::exception($e)->user(Auth::user()->id)->send();
+    }
+
+The `user()` function currently accepts a string or an integer. You should pass through a unique idenfitier of this user. This could be an ID, Email Address etc.
+
+### Getting back an error code
 
 Whenever you send an exception to Zappem, we'll send you back a short unique numeric code. It may be useful to display this to your users. On Zappem you can search for the code and jump to the exception straight away.
 
