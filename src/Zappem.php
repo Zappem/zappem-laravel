@@ -63,9 +63,21 @@ class Zappem{
         );
     }
 
+    private function trimFileName($file){
+    	return substr($file, strlen(base_path()), strlen($file));
+    }
+
+    private function getTrace($e){
+    	$Trace = $e->getTrace();
+    	foreach($Trace as $Key=>$Bit){
+    		if(isset($Bit['file'])) $Trace[$Key]['file'] = $this->trimFileName($Bit['file']);
+    	}
+    	return $Trace;
+    }
+
 	public function exception($e, $found_by=null){
 
-		$Trace = $e->getTrace();
+		$Trace = $this->getTrace($e);
 		$Source = $this->getSource($Trace[0]['file'], $Trace[0]['line']);
 
 		$this->Data = [
@@ -79,9 +91,9 @@ class Zappem{
 			"data" => ($_SERVER['REQUEST_METHOD'] == "post" ? $_POST : $_GET),
 			"message" => $e->getMessage() ? $e->getMessage() : get_class($e),
 			"class" => get_class($e),
-			"file" => $e->getFile(),
-			"line" => $e->getLine(),
-			"trace" => $e->getTrace(),
+			"file" => $Trace[0]['file'],
+			"line" => $Trace[0]['line'],
+			"trace" => $Trace,
 			"source" => $Source
 		];
 
