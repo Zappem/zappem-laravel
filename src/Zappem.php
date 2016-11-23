@@ -67,8 +67,7 @@ class Zappem{
     	return substr($file, strlen(base_path()), strlen($file));
     }
 
-    private function getTrace($e){
-    	$Trace = $e->getTrace();
+    private function getTrace($Trace){
     	foreach($Trace as $Key=>$Bit){
     		if(isset($Bit['file'])) $Trace[$Key]['file'] = $this->trimFileName($Bit['file']);
     	}
@@ -77,8 +76,10 @@ class Zappem{
 
 	public function exception($e, $found_by=null){
 
-		$Trace = $this->getTrace($e);
+		$Trace = $e->getTrace();
 		$Source = $this->getSource($Trace[0]['file'], $Trace[0]['line']);
+		$Trace = $this->getTrace($Trace);
+		
 
 		$this->Data = [
 			"project" => $this->Project,
@@ -101,8 +102,11 @@ class Zappem{
 
 	}
 
-	public function user($User){
-		$this->Data["user"] = $User;
+	public function user($UserID, $UserName){
+		$this->Data["user"] = [
+			"id" => $UserID,
+			"name" => $UserName
+		];
 		return $this;
 	}
 
