@@ -77,8 +77,17 @@ class Zappem{
 	public function exception($e, $found_by=null){
 
 		$Trace = $e->getTrace();
-		$Source = $this->getSource($Trace[0]['file'], $Trace[0]['line']);
-		$Trace = $this->getTrace($Trace);
+		if(count($Trace)){
+			$Source = $this->getSource($Trace[0]['file'], $Trace[0]['line']);
+			$Trace = $this->getTrace($Trace);
+			$File = $this->trimFileName($Trace[0]['file']);
+			$Line = $Trace[0]['line'];
+		}else{
+			$Source = $this->getSource($e->getFile(), $e->getLine());
+			$File = $this->trimFileName($e->getFile());
+			$Line = $e->getLine();
+		}
+
 		
 
 		$this->Data = [
@@ -92,8 +101,8 @@ class Zappem{
 			"data" => ($_SERVER['REQUEST_METHOD'] == "post" ? $_POST : $_GET),
 			"message" => $e->getMessage() ? $e->getMessage() : get_class($e),
 			"class" => get_class($e),
-			"file" => $Trace[0]['file'],
-			"line" => $Trace[0]['line'],
+			"file" => $File,
+			"line" => $Line,
 			"trace" => $Trace,
 			"source" => $Source
 		];
